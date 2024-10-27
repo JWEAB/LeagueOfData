@@ -153,13 +153,13 @@ def generate_graph():
             stats_data.append((match['match_id'], kda_ratio))
         
         elif preference == 'dmgDone':
-            stats_data.append((match['match_id'], match['dmgDone']))
+            stats_data.append((match['match_id'], int(match['dmgDone'])))
         elif preference == 'dmgTaken':
-            stats_data.append((match['match_id'], match['dmgTaken']))
+            stats_data.append((match['match_id'], int(match['dmgTaken'])))
         elif preference == 'gold':
-            stats_data.append((match['match_id'], match['gold']))
+            stats_data.append((match['match_id'], int(match['gold'])))
         elif preference == 'goldMinute':
-            stats_data.append((match['match_id'], match['goldMinute']))
+            stats_data.append((match['match_id'], int(match['goldMinute'])))
         elif preference == 'questions':
             stats_data.append((match['match_id'], int(match['questions'])))
 
