@@ -1,0 +1,181 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e7eef2;
+    color: #1f1e1e;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    color: #d32f2f;
+}
+
+#loadingBar {
+    width: 100%; 
+    margin: 20px 0; 
+    position: relative; 
+    display: none;
+    text-align: center;
+}
+
+progress {
+    width: 100%; 
+    height: 15px; 
+    border-radius: 5px; 
+    background-color: #e0dddd; 
+    border: 2px solid #959393;
+    appearance: none; 
+}
+
+progress::-webkit-progress-bar {
+    background-color: #e0dddd; 
+    border-radius: 5px; 
+}
+
+progress::-webkit-progress-value {
+    background-color: #d53656; 
+    border-radius: 5px; 
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+th, td {
+    text-align: center;
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+th {
+    background-color: #f4f4f4;
+}
+
+.image-container {
+    display: flex;
+    align-items: center; 
+    justify-content: space-between;
+    width: 100%; 
+    margin: 0px 0; 
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    width: 40%; 
+    padding: 0 10px; 
+}
+
+.side-image {
+    max-width: 350px; 
+    height: auto;
+}
+
+.left-image {
+    margin-right: auto;
+    transform: scaleX(-1);
+}
+
+.right-image {
+    margin-left: auto; 
+}
+
+label {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"] {
+    padding: 10px;
+    margin: 5px 0 20px;
+    width: 250px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #d05e5e;
+}
+
+#matchResults {
+    margin-top: 20px;
+    padding: 15px;
+    padding-bottom: 15px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: auto;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+p, h2 {
+    margin: 0;
+    padding: 5px;
+}
+
+/* Dropdown Button */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    margin: 0 auto;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 200px;
+    max-height: 250px;
+    overflow-y: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    left: 50%; 
+    transform: translateX(-50%);
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.graph-dropdown {
+    padding: 10px 20px; 
+    border: 1px solid #ccc;
+    border-radius: 5px; 
+    background-color: #ffffff; 
+    color: #1f1e1e; 
+    height: 38px; 
+    width: auto; 
+    cursor: pointer; 
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Style the dropdown items */
+.dropdown-content label {
+    padding: 5px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change color of dropdown items on hover */
+.dropdown-content label:hover {
+    background-color: #f1f1f1;
+}

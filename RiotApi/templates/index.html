@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>League of Data</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        async function generateGraph() {
+            const selectedPreference = document.getElementById('preferenceSelect').value;
+
+            if (!selectedPreference) {
+                alert('Please select a graph preference.');
+                return;
+            }
+
+            const matchResults = document.getElementById('matchResults');
+            const matches = [];
+            const rows = matchResults.getElementsByTagName('tr');
+
+            // Create a mapping of header names to their indices
+            const headers = rows[0].getElementsByTagName('th');
+            const headerMap = {};
+
+            for (let i = 0; i < headers.length; i++) {
+                headerMap[headers[i].innerText.trim().toLowerCase()] = i; // Use trimmed lowercase headers for mapping
+            }
+
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                const match = {
+                    match_id: i || '',
+                    KDA: cells[headerMap['kda']]?.innerText || '',
+                    dmgDone: cells[headerMap['damage done']]?.innerText || 0,
+                    dmgTaken: cells[headerMap['damage taken']]?.innerText || 0,
+                    gold: cells[headerMap['gold gained']]?.innerText || 0,
+                    goldMinute: cells[headerMap['gold per minute']]?.innerText || 0,
+                    questions: cells[headerMap['question pings used']]?.innerText || 0,
+                };
+                matches.push(match);
+            }
+
+            const response = await fetch('/generate_graph', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ preference: selectedPreference, matches: matches})
+
+            });
+
+            if (response.ok) {
+                // Set the source of the image to the generated graph
+                document.getElementById('graphImage').src = '/static/graph.png';
+                document.getElementById('graphImage').style.display = 'block'; // Make the image visible
+            } else {
+                console.error('Failed to generate graph');
+            }
+        }
+        async function fetchMatchStats() {
+            const accountName = document.getElementById('accountName').value;
+            const accountTag = document.getElementById('accountTag').value;
+            const matchesWanted = document.getElementById('matchesWanted').value;
+
+            const selectedPreferences = Array.from(document.querySelectorAll('.preference-checkbox:checked'))
+                                             .map(option => option.value);
+
+                                             const loadingBar = document.getElementById('loadingBar');
+
+            const loadingProgress = document.getElementById('loadingProgress');
+    
+            loadingBar.style.display = 'block';
+            loadingProgress.value = 0; 
+
+            let progressInterval = setInterval(() => {
+                if (loadingProgress.value < 90) {
+                    loadingProgress.value += 4; 
+                }
+            }, 550);
+
+            const response = await fetch(`/get_matches_stats/${accountName}/${accountTag}/${matchesWanted}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ preferences: selectedPreferences })
+            });
+            const data = await response.json();
+
+            let output = '';
+            if (response.ok) {
+                output = `<h2>Match Statistics:</h2>
+                          <p>Wins: ${data.stats.wins}</p>
+                          <p>Losses: ${data.stats.losses}</p>
+                          <p>Win Rate: ${data.stats.win_rate.toFixed(2)}%</p>`;
+                output += createMatchTable(data.matches, selectedPreferences);
+                output += createGraphButton(selectedPreferences);
+            } else {
+                output = `<p>Error: ${data.error}</p>`;
+            }
+            loadingProgress.value = 100;
+            document.getElementById('matchResults').innerHTML = output;
+
+            clearInterval(progressInterval);
+            loadingProgress.value = 100;
+    
+            setTimeout(() => {
+                loadingBar.style.display = 'none';
+            }, 500);
+
+        }
+
+        function createGraphButton(preferences) {
+            let container = '<div class="graph-controls">';
+            let dropDown = '<select class="graph-dropdown" id="preferenceSelect">';
+            dropDown += '<option value="">--Select an option--</option>'
+            if (preferences.includes("kda")) {
+                dropDown += '<option value="kda">KDA</option>'
+            }
+            if (preferences.includes("dmgDone")) {
+                dropDown += '<option value="dmgDone">Damage Done</option>'
+            }
+            if (preferences.includes("dmgTaken")) {
+                dropDown += '<option value="dmgTaken">Damage Taken</option>'
+            }
+            if (preferences.includes("gold")) {
+                dropDown += '<option value="gold">Gold</option>'
+            }
+            if (preferences.includes("goldMinute")) {
+                dropDown += '<option value="goldMinute">Gold Per Minute</option>'
+            }
+            if (preferences.includes("questions")) {
+                dropDown += '<option value="questions">Question Pings Used</option>'
+            }
+            dropDown += '</select>'
+            let button = `<button onclick="generateGraph()">Generate Graph</button>` +
+                        '<img id="graphImage" src="" alt="Graph will appear here" style="display:none;"/>';
+            return container += dropDown + button + '</div>';
+        }
+
+        function createMatchTable(matches, preferences) {
+            let matchTable = '<table><thead><tr><th></th><th>Match ID</th><th>Result</th>';
+            if (preferences.includes("champion")) {
+                matchTable += '<th>Champion</th>';
+            }
+            if (preferences.includes("kda")) {
+                matchTable += '<th>KDA</th>'
+            }
+            if (preferences.includes("dmgDone")) {
+                matchTable += '<th>Damage Done</th>'
+            }
+            if (preferences.includes("dmgTaken")) {
+                matchTable += '<th>Damage Taken</th>'
+            }
+            if (preferences.includes("gold")) {
+                matchTable += '<th>Gold Gained</th>'
+            }
+            if (preferences.includes("goldMinute")) {
+                matchTable += '<th>Gold Per Minute'
+            }
+            if (preferences.includes("questions")) {
+                matchTable += '<th>Question Pings Used</th>'
+            }
+            matchTable += '</tr></thead><tbody>';
+            matches.forEach((match, index) => {
+                matchTable += `<tr><td>${index + 1}</td><td>${match.match_id}</td><td>${match.result}</td>`;
+                if (preferences.includes("champion")) {
+                    matchTable += `<td>${match.champion || 'N/A'}</td>`;
+                }
+                if (preferences.includes("kda")) {
+                    matchTable += `<td>${match.KDA}</td>`;
+                }
+                if (preferences.includes("dmgDone")) {
+                    matchTable += `<td>${match.dmgDone}</td>`;
+                }
+                if (preferences.includes("dmgTaken")) {
+                    matchTable += `<td>${match.dmgTaken}</td>`;
+                }
+                if (preferences.includes("gold")) {
+                    matchTable += `<td>${match.gold}</td>`;
+                }
+                if (preferences.includes("goldMinute")) {
+                    matchTable += `<td>${match.goldMinute.toFixed(2)}</td>`;
+                }
+                if (preferences.includes("questions")) {
+                    matchTable += `<td>${match.questions}</td>`;
+                }
+                matchTable += '</tr>';
+            });
+
+            matchTable += '</tbody></table>';
+            return matchTable;
+        }
+    </script>
+</head>
+<body>
+    <h1>League of Data</h1>
+
+    <div class="image-container">
+        <img src="{{ url_for('static', filename='Draven.jpg') }}" alt="Left Image" class="side-image left-image">
+        
+        <div class="input-container">
+            <label for="accountName">Account Name:</label>
+            <input type="text" id="accountName" required>
+            
+            <label for="accountTag">Account Tag:</label>
+            <input type="text" id="accountTag" required>
+    
+            <label for="matchesWanted">Number of Matches:</label>
+            <input type="number" id="matchesWanted" value="" required>
+            
+            <div>(40 and up exceeds rate limit)</div>
+    
+            <div class="dropdown">
+                <button class="dropbtn">Select Preferences</button>
+                <div class="dropdown-content">
+                    <label><input type="checkbox" class="preference-checkbox" value="ranked"> Ranked</label>
+                    <label><input type="checkbox" class="preference-checkbox" value="normal"> Normal</label>
+                    <label><input type="checkbox" class="preference-checkbox" value="champion"> Champion</label>
+                    <label><input type="checkbox" class="preference-checkbox" value="kda"> KDA</label>
+                    <label><input type="checkbox" class="preference-checkbox" value="dmgDone"> Damage Done</label>
+                    <label><input type="checkbox" class="preference-checkbox" value="dmgTaken"> Damage Taken</label>
+                    <label><input type="checkbox" class="preference-checkbox" value="gold"> Gold</label>
+                    <label><input type="checkbox" class="preference-checkbox" value="goldMinute"> Gold Per Minute</label>
+                    <label><input type="checkbox" class="preference-checkbox" value="questions"> Question Pings Used</label>
+                    <!-- Add more options as needed -->
+                </div>
+            </div>
+    
+            <button onclick="fetchMatchStats()">Fetch Match Stats</button>
+
+            <div id="loadingBar" style="display:none;">
+                <progress value="0" max="100" id="loadingProgress"></progress>
+                <span>Fetching data...</span>
+            </div>
+        </div>
+        <img src="{{ url_for('static', filename='Draven.jpg') }}" alt="Right Image" class="side-image right-image">
+    </div>
+    
+    <div id="matchResults"></div>
+</body>
+</html>
