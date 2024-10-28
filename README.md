@@ -17,7 +17,7 @@ League of Data is a web application that interacts with the Riot Games API to re
 
 ## Project Structure
 
-```bash
+```
 league-of-data/
 │
 ├── app.py                  
@@ -35,7 +35,6 @@ league-of-data/
 
 **Install the required dependencies**:
 
-    bash
     pip install -r requirements.txt
 
 **Obtain a Riot Games API Key**:
@@ -46,7 +45,6 @@ league-of-data/
 
 **Run the application**:
 
-    bash
     python app.py
 
     The application will start at `http://127.0.0.1:5000`.
