@@ -23,7 +23,8 @@ league-of-data/
 ├── app.py                  
 ├── static/
 │   ├── style.css              
-│   ├── Draven.jpg              
+│   ├── Draven.jpg
+│   ├── graph.png (not required it will create graph.png when you make a graph)              
 ├── templates/
 │   └── index.html              
 ├── requirements.txt           
@@ -38,9 +39,10 @@ league-of-data/
     pip install -r requirements.txt
 
 **Obtain a Riot Games API Key**:
-    - Visit the [Riot Developer Portal](https://developer.riotgames.com/) and sign up or log in.
-    - Create an API key to use with your application.
-    - Insert into app.py
+
+- Visit the [Riot Developer Portal](https://developer.riotgames.com/) and sign up or log in.
+- Create an API key to use with your application.
+- Insert into app.py
 
 **Run the application**:
 
