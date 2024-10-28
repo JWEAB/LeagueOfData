@@ -47,7 +47,7 @@ league-of-data/
 **Run the application**:
 
     bash
-    flask run
+    python app.py
 
     The application will start at `http://127.0.0.1:5000`.
 
