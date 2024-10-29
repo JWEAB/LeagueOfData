@@ -18,7 +18,7 @@ League of Data is a web application that interacts with the Riot Games API to re
 ## Project Structure
 
 ```
-league-of-data/
+RiotApi/
 │
 ├── app.py                  
 ├── static/
@@ -28,7 +28,7 @@ league-of-data/
 ├── templates/
 │   └── index.html              
 ├── requirements.txt           
-└── README.md
+README.md
 ```
 
 ## Installation
