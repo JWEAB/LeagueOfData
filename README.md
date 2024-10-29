@@ -27,7 +27,7 @@ RiotApi/
 │   ├── graph.png (not required it will create graph.png when you make a graph)              
 ├── templates/
 │   └── index.html              
-├── requirements.txt           
+└── requirements.txt           
 README.md
 ```
 
